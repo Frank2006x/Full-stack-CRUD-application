@@ -1,6 +1,6 @@
 import React from "react";
-
-const NavBar = () => {
+import ModalForm from "./ModalForm";
+const NavBar = ({onOpen}) => {
   return (
     <>
       <div className="navbar bg-base-100 shadow-sm">
@@ -12,7 +12,7 @@ const NavBar = () => {
         </div>
 
         <div className="navbar-end">
-          <a className="btn">Button</a>
+          <button onClick={onOpen} className="btn btn-primary">Add clients</button>
         </div>
       </div>
     </>
