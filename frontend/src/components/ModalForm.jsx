@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 
 const ModalForm = ({ mode, isOpen, onClose, onSubmit }) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [job, setJob] = useState("");
+  const [rate, setRate] = useState("");
+  const [status, setStatus] = useState(true);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onClose(e)
+  };
+
   return (
     <>
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
 
       <dialog id="my_modal_3" className="modal" open={isOpen}>
         <div className="modal-box w-110 flex flex-col justify-center items-center overflow-hidden p-10">
-          <form method="dialog" className="flex flex-col gap-6">
+          <form method="dialog" onSubmit={handleSubmit} className="flex flex-col gap-6">
             <h3 className="font-bold text-lg">
               {mode == "add" ? "Client details" : "Edit client"}
             </h3>
@@ -24,6 +35,8 @@ const ModalForm = ({ mode, isOpen, onClose, onSubmit }) => {
                 type="text"
                 placeholder="John Doe"
                 className="input input-md w-100"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
             </label>
             <label className="floating-label">
@@ -32,6 +45,8 @@ const ModalForm = ({ mode, isOpen, onClose, onSubmit }) => {
                 type="text"
                 placeholder="mail@site.com"
                 className="input input-md w-100"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </label>
             <label className="floating-label">
@@ -40,6 +55,8 @@ const ModalForm = ({ mode, isOpen, onClose, onSubmit }) => {
                 type="text"
                 placeholder="Designer"
                 className="input input-md w-100"
+                onChange={(e) => setJob(e.target.value)}
+                value={job}
               />
             </label>
             <div className="flex gap-4 ">
@@ -49,9 +66,16 @@ const ModalForm = ({ mode, isOpen, onClose, onSubmit }) => {
                   type="number"
                   placeholder="45"
                   className="input input-md"
+                  value={rate}
+                  onChange={(e) => setRate(e.target.value)}
                 />
               </label>
-              <select defaultValue="inactive" className="select select-info w-50">
+              <select
+                defaultValue="inactive"
+                value={status ? "Active" : "Inactive"}
+                className="select select-info w-50"
+                onChange={(e) => setStatus(e.target.value == "Active")}
+              >
                 <option disabled={true}>Choose your status</option>
                 <option>Active</option>
                 <option>Inactive</option>
