@@ -1,6 +1,6 @@
 import { db } from "../db/db.js";
 import { clientTable } from "../db/schema.js";
-import { eq } from "drizzle-orm";
+import { eq, like } from "drizzle-orm";
 
 export async function getClients() {
   const res = await db.select().from(clientTable);
@@ -28,4 +28,13 @@ export async function deleteClient(clientId) {
     .delete(clientTable)
     .where(eq(clientTable.id, clientId));
   return results.rowCount > 0 ? true : false;
+}
+
+export async function searchClients(clientName) {
+  const pattern = `%${clientName}%`;
+  const results = await db
+    .select()
+    .from(clientTable)
+    .where(like(clientTable.name, pattern));
+  return results;
 }
