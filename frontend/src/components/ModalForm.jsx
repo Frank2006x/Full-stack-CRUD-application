@@ -1,24 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const ModalForm = ({ mode, isOpen, onClose, onSubmit }) => {
+const ModalForm = ({
+  mode,
+  isOpen,
+  onClose,
+  onSubmit,
+  setModalData,
+  modalData,
+}) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [job, setJob] = useState("");
   const [rate, setRate] = useState("");
   const [status, setStatus] = useState(true);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onClose(e)
+    try {
+      const data = { name, email, job, rate: Number(rate), isActive: status };
+      setModalData(data);
+      await onSubmit(data); // Pass data directly
+    } catch (err) {
+      console.log(err);
+    }
+    onClose(e);
   };
-
+  useEffect(() => {
+    if (mode == "edit" && modalData) {
+      setName(modalData.name);
+      setEmail(modalData.email);
+      setJob(modalData.job);
+      setRate(modalData.rate);
+      setStatus(modalData.isActive);
+    } else {
+      setName("");
+      setEmail("");
+      setJob("");
+      setRate("");
+      setStatus(true);
+    }
+  }, [mode, modalData]);
   return (
     <>
       {/* You can open the modal using document.getElementById('ID').showModal() method */}
 
       <dialog id="my_modal_3" className="modal" open={isOpen}>
         <div className="modal-box w-110 flex flex-col justify-center items-center overflow-hidden p-10">
-          <form method="dialog" onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <form
+            method="dialog"
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-6"
+          >
             <h3 className="font-bold text-lg">
               {mode == "add" ? "Client details" : "Edit client"}
             </h3>
@@ -71,7 +103,6 @@ const ModalForm = ({ mode, isOpen, onClose, onSubmit }) => {
                 />
               </label>
               <select
-                defaultValue="inactive"
                 value={status ? "Active" : "Inactive"}
                 className="select select-info w-50"
                 onChange={(e) => setStatus(e.target.value == "Active")}

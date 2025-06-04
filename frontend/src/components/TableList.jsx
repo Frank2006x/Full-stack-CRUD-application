@@ -1,43 +1,18 @@
-import React from "react";
+import axios from "axios";
 
-const clients = [
-  {
-    id: 1,
-    name: "Johm",
-    email: "johm@gmail.com",
-    job: "carpenter",
-    status: true,
-    rate: 25,
-  },
-  {
-    id: 2,
-    name: "Alice",
-    email: "alice@example.com",
-    job: "designer",
-    status: false,
-    rate: 30,
-  },
-  {
-    id: 3,
-    name: "Bob",
-    email: "bob@example.com",
-    job: "developer",
-    status: true,
-    rate: 40,
-  },
-  {
-    id: 4,
-    name: "Sara",
-    email: "sara@example.com",
-    job: "manager",
-    status: false,
-    rate: 35,
-  },
-];
+const TableList = ({ onOpen, tableData, error ,onRefresh}) => {
+  const handleDelete = async (id) => {
+    const result = confirm("Are you sure?");
+    if (result) {
+      await axios.delete(`http://localhost:8000/api/clients/${id}`);
+      console.log("User confirmed.");
+    }
+    onRefresh()
+  };
 
-const TableList = ({onOpen}) => {
   return (
     <>
+      {error && <div className="alert alert-error">{error}</div>}
       <div className="overflow-x-auto mt-10">
         <table className="table">
           {/* head */}
@@ -52,8 +27,8 @@ const TableList = ({onOpen}) => {
             </tr>
           </thead>
           <tbody>
-            {clients.map((client) => (
-              <tr key={client.id}className="hover:bg-base-300">
+            {tableData.map((client) => (
+              <tr key={client.id} className="hover:bg-base-300">
                 <th>{client.id}</th>
                 <td>{client.name}</td>
                 <td>{client.email}</td>
@@ -62,17 +37,27 @@ const TableList = ({onOpen}) => {
                 <td>
                   <button
                     className={`btn ${
-                      client.status ? "btn-primary btn-outline" : "btn-primary btn-soft"
+                      client.isActive
+                        ? "btn-primary btn-outline"
+                        : "btn-primary btn-soft"
                     } rounded-full `}
                   >
-                    {client.status ? "active" : "inactive"}
+                    {client.isActive ? "active" : "inactive"}
                   </button>
                 </td>
                 <td>
-                  <button onClick={onOpen} className="btn-secondary btn btn-dash">Update</button>
+                  <button
+                    onClick={() => onOpen("edit", client)}
+                    className="btn-secondary btn btn-dash"
+                  >
+                    Update
+                  </button>
                 </td>
                 <td>
-                  <button className="btn btn-error btn-ghost border-0.5 border-red-500">
+                  <button
+                    className="btn btn-error btn-ghost border-0.5 border-red-500"
+                    onClick={() => handleDelete(client.id)}
+                  >
                     Delete
                   </button>
                 </td>

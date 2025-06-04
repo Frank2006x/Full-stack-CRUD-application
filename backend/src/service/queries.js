@@ -3,7 +3,7 @@ import { clientTable } from "../db/schema.js";
 import { eq, like } from "drizzle-orm";
 
 export async function getClients() {
-  const res = await db.select().from(clientTable);
+  const res = await db.select().from(clientTable).orderBy(clientTable.id);
   return res;
 }
 
@@ -35,6 +35,7 @@ export async function searchClients(clientName) {
   const results = await db
     .select()
     .from(clientTable)
-    .where(like(clientTable.name, pattern));
+    .where(like(clientTable.name, pattern))
+    .orderBy(clientTable.id);
   return results;
 }
